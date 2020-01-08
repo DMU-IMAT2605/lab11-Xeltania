@@ -21,6 +21,8 @@ public :
 	//! Getters :
 	shared_ptr<DLLNode<T>> GetNext(); //!< Gets the next node pointer.
 	shared_ptr<DLLNode<T>> GetPrev(); //!< Gets the previous node pointer.
+	void SetPrev(shared_ptr<DLLNode> newPrev);
+	void SetNext(shared_ptr<DLLNode> newNext);
 	T GetData();
 };
 
@@ -45,6 +47,18 @@ template <class T>
 shared_ptr<DLLNode<T>> DLLNode<T>::GetPrev() //!< Gets the previous node in the list:
 {
 	return p_prevNode;
+}
+
+template<class T>
+void DLLNode<T>::SetPrev(shared_ptr<DLLNode> newPrev)
+{
+	p_prevNode = newPrev;
+}
+
+template<class T>
+void DLLNode<T>::SetNext(shared_ptr<DLLNode> newNext)
+{
+	p_nextNode = newNext;
 }
 
 template<class T>

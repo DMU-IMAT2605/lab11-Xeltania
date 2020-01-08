@@ -24,15 +24,18 @@ public:
 	void AddFront(T newFront);
 	void AddBack(T newBack);
 	//! Node Removing Methods :
-	void RemNext();
-	void RemPrev();
+	void RemCurrent();
 	void RemFront();
 	void RemBack();
 	//! Getters : 
 	T GetFront();
 	T GetBack();
+	T GetCurrent();
 	unsigned int GetSize();
 	bool ListEmpty();
+	//! Traversal Methods :
+	void TraverseNext();
+	void TraversePrev();
 
 };
 
@@ -65,63 +68,108 @@ template<class T>
 void DLL<T>::AddFront(T newFront) //!< Adds a node to the start of the list:
 {
 	cout << "Adding " << newFront << " to the front of the list..." << endl;
+	/* Old method for adding to the front of the list, less efficient:
 	if (m_listSize == 0) 
 	{
-		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, p_backNode, nullptr));
-		p_backNode = p_frontNode;
+		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, nullptr, nullptr));
+		
 		p_currentNode = p_frontNode;
+		p_backNode = p_currentNode;
 	}
 	else
 	{
 		shared_ptr<DLLNode<T>> temp = p_frontNode;
-		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, temp, p_frontNode));
-		temp = nullptr;
+		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, temp, nullptr));
+		temp->SetNext(p_frontNode);
+		
+	}*/
+	shared_ptr<DLLNode<T>> temp = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, p_frontNode, nullptr));
+	if (p_frontNode != nullptr) 
+	{
+		p_frontNode->SetNext(temp);
 	}
+	if (p_backNode == nullptr) {
+		p_backNode=temp;
+	}
+	p_frontNode = temp;
+	p_currentNode = temp;
 	m_listSize++;
 }
 
 template<class T>
 void DLL<T>::AddBack(T newBack) //!< Adds a node to the end of the list:
 {
-	cout << "Adding " << newBack << " to the back of the list..." << endl;
-	shared_ptr<DLLNode<T>> temp = p_backNode;
-	p_backNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newBack, nullptr, temp));
-	temp = nullptr;
-	m_listSize++;
+	if (m_listSize > 0)
+	{
+		cout << "Adding " << newBack << " to the back of the list..." << endl;
+		shared_ptr<DLLNode<T>> temp = p_backNode;
+		p_backNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newBack, nullptr, temp));
+		m_listSize++;
+	}
 }
 
 template<class T>
-void DLL<T>::RemNext() //!< Removes the node after the current node in the list:
+void DLL<T>::RemCurrent() //!< Removes the node after the current node in the list:
 {
+	if (m_listSize > 0)
+	{
+		cout << "Removing " << p_currentNode->GetData() << " from the list ... " << endl;
+		shared_ptr<DLLNode<T>> tempPrev = p_currentNode->GetPrev();
+		shared_ptr<DLLNode<T>> tempNext = p_currentNode->GetNext();
+		shared_ptr<DLLNode<T>> tempCurrent = p_currentNode;
+		if (tempNext != nullptr) 
+		{
+			tempNext->SetPrev(tempPrev);
+			p_currentNode = tempNext;
+		}
+		else 
+		{
+			p_frontNode = p_currentNode;
+		};
+		if (tempPrev != nullptr) 
+		{
+			tempPrev->SetNext(tempNext);
+			p_currentNode= tempPrev;
+		}
+		else 
+		{
+			p_frontNode = p_currentNode;
+		};
+
+		m_listSize--;
+	}
+	else cout << "Cannot remove : no items left in the list!" << endl;
 }
 
-template<class T>
-void DLL<T>::RemPrev() //!< Removes the node prior to the current node in the list:
-{
-}
 
 template<class T>
 void DLL<T>::RemFront() //!< Removes the first node front of the list:
 {
 	if (m_listSize > 0)
 	{
-		shared_ptr<DLLNode<T>> temp = p_backNode;
-
+		cout << "Removing " << p_frontNode->GetData() << " from the list..." << endl;
+		shared_ptr<DLLNode<T>> temp = p_frontNode;
+		p_frontNode = p_frontNode->GetPrev();
+		p_frontNode->SetNext(nullptr);
 
 		m_listSize--;
 	}
+	else cout << "Cannot remove : no items left in the list!" << endl;
 }
 
 template<class T>
 void DLL<T>::RemBack() //!< Removes the last node from the linked list:
 {
-	if (m_listSize > 0) 
+	if (m_listSize > 0)
 	{
-		shared_ptr<DLLNode<T>> temp = p_frontNode;
-
+		cout << "Removing " << p_backNode->GetData() << " from the list..." << endl;
+		shared_ptr<DLLNode<T>> temp = p_backNode;
+		p_backNode = p_backNode->GetNext();
+		p_backNode->SetPrev(nullptr);
 
 		m_listSize--;
 	}
+	else cout << "Cannot remove : no items left in the list!" << endl;
 
 }
 
@@ -140,6 +188,13 @@ T DLL<T>::GetBack() //!< Method that returns the last node in the linked list:
 }
 
 template<class T>
+T DLL<T>::GetCurrent()
+{
+	T data = p_currentNode->GetData();
+	return data;
+}
+
+template<class T>
 unsigned int DLL<T>::GetSize() //!< Method that returns the current size of the linked list:
 {
 	return m_listSize;
@@ -149,4 +204,28 @@ template<class T>
 bool DLL<T>::ListEmpty() //!< Method that checks if the list has any items in it:
 {
 	return m_listSize == 0;
+}
+
+template<class T>
+void DLL<T>::TraverseNext()
+{
+	if (p_currentNode->GetNext() != nullptr)
+	{
+		cout << p_currentNode << " going to next : ";
+		cout << p_currentNode->GetNext() << endl;
+		p_currentNode = p_currentNode->GetNext();
+	}
+	else cout << "Cannot traverse any further, at the front!" << endl;
+}
+
+template<class T>
+void DLL<T>::TraversePrev()
+{
+	if (p_currentNode->GetPrev() != nullptr)
+	{
+		cout << p_currentNode << " going to previous : ";
+		cout << p_currentNode->GetPrev() << endl;
+		p_currentNode = p_currentNode->GetPrev();
+	}
+	else cout << "Cannot traverse any further, at the back!" << endl;
 }
