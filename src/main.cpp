@@ -13,25 +13,25 @@ void main() /** Entry point for the application */
 {
 	DLL<string> list;
 
-	cout << list.ListEmpty() << endl;
-	list.AddFront("Thing");
-	list.AddFront("Stuff");
-	cout << list.GetCurrent() << endl;
+	cout << "Empty : " << list.ListEmpty() << endl;
+	list.AddBack("I");
+	list.AddFront("Doubly");
 	list.TraverseNext();
-	list.AddBack("Item");
-	list.AddBack("egg");
-	cout << list.ListEmpty() << endl << list.GetSize() << endl;
-	cout << list.GetFront() << endl << list.GetBack() << endl << list.GetCurrent() << endl;
 	list.TraversePrev();
-	list.TraversePrev();
-	list.TraversePrev();
-	list.AddNext("Epic");
-	list.AddPrev("lol");
-	//list.RemBack();
-	//list.RemFront();
+	list.AddNext("Linked");
+	list.AddPrev("Am");
+	cout << "Empty : " << list.ListEmpty() << endl << "Size : " << list.GetSize() << endl;
+	cout << "Front : " << list.GetFront() << endl << "Back : " << list.GetBack() << endl << "Current : " << list.GetCurrent() << endl;
+	list.RemFront();
+	cout << "Size : " << list.GetSize() << endl;
+	list.RemBack();
+	list.RemFront();
+	list.RemFront();
+	cout << "Size : " << list.GetSize() << endl;
 	list.RemCurrent();
-	cout << list.GetBack() << endl << list.GetFront() << endl;
-	
+	cout << "Current : " << list.GetCurrent() << endl;
+	cout << "Back : " << list.GetBack() << endl << "Front : " << list.GetFront() << endl;
+	list.~DLL();
 	_CrtDumpMemoryLeaks(); // Look in the output window for a report
 	system("pause");
 }

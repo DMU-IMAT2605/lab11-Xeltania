@@ -50,13 +50,13 @@ shared_ptr<DLLNode<T>> DLLNode<T>::GetPrev() //!< Gets the previous node in the 
 }
 
 template<class T>
-void DLLNode<T>::SetPrev(shared_ptr<DLLNode> newPrev)
+void DLLNode<T>::SetPrev(shared_ptr<DLLNode> newPrev) //!< Sets the previous node to a new pointer.
 {
 	p_prevNode = newPrev;
 }
 
 template<class T>
-void DLLNode<T>::SetNext(shared_ptr<DLLNode> newNext)
+void DLLNode<T>::SetNext(shared_ptr<DLLNode> newNext) //!< Sets the node to point to a new next node.
 {
 	p_nextNode = newNext;
 }
