@@ -55,34 +55,31 @@ DLL<T>::~DLL() //!< Deconstructor
 template <class T>
 void DLL<T>::AddNext(T newNext) //!< Adds a node between the current and next nodes in the list:
 {
-
+	cout << "Adding " << newNext << " after " << p_currentNode->GetData() << endl;
+	shared_ptr<DLLNode<T>> tempNext = p_currentNode->GetNext();
+	shared_ptr<DLLNode<T>> tempPrev = p_currentNode;
+	shared_ptr<DLLNode<T>> tempCurrent = shared_ptr<DLLNode<T>>(new DLLNode<T>(newNext, tempNext, p_currentNode));
+	tempNext->SetNext(tempCurrent);
+	tempPrev->SetPrev(tempCurrent);
+	p_currentNode = tempCurrent;
+	m_listSize++;
 }
 
 template<class T>
 void DLL<T>::AddPrev(T newPrev) //!< Adds a node between the current and previous nodes in the list:
 {
-
+	shared_ptr<DLLNode<T>> tempNext = p_currentNode;
+	shared_ptr<DLLNode<T>> tempPrev = p_currentNode->GetPrev();
+	shared_ptr<DLLNode<T>> tempCurrent = shared_ptr<DLLNode<T>>(new DLLNode<T>(newPrev, tempNext, tempPrev));
+	tempPrev->SetPrev(tempCurrent);
+	tempNext->SetNext(tempCurrent);
+	m_listSize++;
 }
 
 template<class T>
 void DLL<T>::AddFront(T newFront) //!< Adds a node to the start of the list:
 {
 	cout << "Adding " << newFront << " to the front of the list..." << endl;
-	/* Old method for adding to the front of the list, less efficient:
-	if (m_listSize == 0) 
-	{
-		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, nullptr, nullptr));
-		
-		p_currentNode = p_frontNode;
-		p_backNode = p_currentNode;
-	}
-	else
-	{
-		shared_ptr<DLLNode<T>> temp = p_frontNode;
-		p_frontNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, temp, nullptr));
-		temp->SetNext(p_frontNode);
-		
-	}*/
 	shared_ptr<DLLNode<T>> temp = shared_ptr<DLLNode<T>>(new DLLNode<T>(newFront, p_frontNode, nullptr));
 	if (p_frontNode != nullptr) 
 	{
@@ -99,13 +96,21 @@ void DLL<T>::AddFront(T newFront) //!< Adds a node to the start of the list:
 template<class T>
 void DLL<T>::AddBack(T newBack) //!< Adds a node to the end of the list:
 {
-	if (m_listSize > 0)
+
+	cout << "Adding " << newBack << " to the back of the list..." << endl;
+	shared_ptr<DLLNode<T>> temp = shared_ptr<DLLNode<T>>(new DLLNode<T>(newBack, nullptr, temp));
+	if (p_backNode != nullptr) 
 	{
-		cout << "Adding " << newBack << " to the back of the list..." << endl;
-		shared_ptr<DLLNode<T>> temp = p_backNode;
-		p_backNode = shared_ptr<DLLNode<T>>(new DLLNode<T>(newBack, nullptr, temp));
-		m_listSize++;
+		p_backNode->SetPrev(temp);
 	}
+	if (p_frontNode == nullptr) 
+	{
+		p_backNode = temp;
+	}
+
+	p_backNode = temp;
+	m_listSize++;
+	
 }
 
 template<class T>
@@ -223,8 +228,8 @@ void DLL<T>::TraversePrev()
 {
 	if (p_currentNode->GetPrev() != nullptr)
 	{
-		cout << p_currentNode << " going to previous : ";
-		cout << p_currentNode->GetPrev() << endl;
+		cout << p_currentNode->GetData() << " going to previous : ";
+		cout << p_currentNode->GetPrev()->GetData() << endl;
 		p_currentNode = p_currentNode->GetPrev();
 	}
 	else cout << "Cannot traverse any further, at the back!" << endl;

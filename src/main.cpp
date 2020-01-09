@@ -22,6 +22,11 @@ void main() /** Entry point for the application */
 	list.AddBack("egg");
 	cout << list.ListEmpty() << endl << list.GetSize() << endl;
 	cout << list.GetFront() << endl << list.GetBack() << endl << list.GetCurrent() << endl;
+	list.TraversePrev();
+	list.TraversePrev();
+	list.TraversePrev();
+	list.AddNext("Epic");
+	list.AddPrev("lol");
 	//list.RemBack();
 	//list.RemFront();
 	list.RemCurrent();
